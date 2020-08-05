@@ -1,0 +1,38 @@
+#EXPERIMENT 1
+mydata <- read.table(file.choose(), header = TRUE) #Import data txt file via the computer directory; my dataset is 'Student number 103 Experiment 1.txt - if doing a full run, directory will pop-up again immediately; select S'tudent number 103 Experiment 2.txt', for the second experiment
+View(mydata)#Check data came through, and how it formatted
+Experiment_One <- (mydata) #Create object 'Experiment_One' using the data from mydata
+rm(mydata) #Remove the 'mydata' dataset, to clear space on the data environment
+data.frame(Experiment_One) #check it is ok
+names(Experiment_One) #Check the variable titles 
+str(Experiment_One) #Quick diagnosis of the data
+hist(Experiment_One$reaction_time_ms, xlab = "Reaction time (ms)", main = "Histogram of reaction time", cex.axis=1.1, cex.lab=1.4, cex.main=1.6, col = "paleturquoise1") #Produce a histogram to check for normal distribution, with axis edits and colour input 
+boxplot(Experiment_One$reaction_time_ms~Experiment_One$sex*Experiment_One$treatment, ylab = "Reaction times (ms)", main = "Reaction times of different sexes in different drug conditions", cex.main=1.4, xlab = "Sample condition (sex/drug treatment)", names=c("Female/Control", "Male/Control", "Female/Drug", "Male/Drug"), cex.lab=1.4, col=c("lightcoral", "lightblue", "palevioletred4", "royalblue1")) #Create a boxplot to get an initial idea of the data within the groupings of levels of the two explanatory factors, with axis edits and colour input to clearly differentiate
+gibbernium.twoway.anova <-aov(Experiment_One$reaction_time_ms~Experiment_One$sex*Experiment_One$treatment)#Computation of a two-way ANOVA under the name 'gibbernium.twoway.anova', as there are two explanatory variables (sex and drug treatment)
+anova(gibbernium.twoway.anova) #Produce two-tailed ANOVA, to determine if there is significant interaction between the two explanatory variables, on reaction times 
+TukeyHSD(gibbernium.twoway.anova) #Produce a TUKEYHSD, to produce all possible pairwise comparisons, to determine where the significant differences are 
+(168.4+164.5+189.2+220.4+184.0+204.3+192.2+167.2+181.0+151.6+206.8+190.8+200.2+177.6+206.4+204.0+176.0+189.8+210.2+191.1)/20 #average reaction time of female control group, i.e. slowest group, for the write up
+(63.5+123.4+85.1+109.4+76.7+102.0+87.0+103.6+100.8+134.6+123.5+132.2+134.7+83.4+90.2+110.4+122.3+110.9+110.7+124.1)/20 #average reaction time of female Gibbernium group, i.e. fastest group, for the write up
+hist(gibbernium.twoway.anova$residuals, xlab = "ANOVA residuals", main = "Histogram of Gibbernium ANOVA residuals")#double check that data erros were normally distributed to begin with by producing histogram of residuals
+
+
+#EXPERIMENT 2
+mydata <- read.table(file.choose(), header = TRUE)#Import data txt file via the directory; Import data txt file via the computer directory; my dataset is 'Student number 103 Experiment 2.txt'
+View(mydata) #Check data came through, and how it formatted
+Experiment_Two <- (mydata) #Create object 'Experiment_Two' using the data from mydata
+rm(mydata, Experiment_One) #Remove the 'mydata' dataset, and in Experiment 1, to clear space on the data environment
+data.frame(Experiment_Two) #check it is ok
+names(Experiment_Two) #Check the variable titles 
+str(Experiment_Two) #Quick diagnosis of the data
+t(Experiment_Two) #swaps around the orientation of the table - easier to read for myself 
+Experiment_two <- t(Experiment_Two)#creates new object of the same data, but oriented
+View(Experiment_two)#check the orientation has not messed up the data 
+rm(Experiment_Two)#remove the original Experiment 2 dataset
+mycols = c("palegreen4", "royalblue", "orangered4") #create an object of the colours in the order I wish to use them in my subsequent bar plot, in regards to blood pressure changes 
+barplot(Experiment_two, beside=TRUE, col=mycols, legend=c("Decrease","No change", "Increase"), names=c("Control (without Gibbernium)", "Drug (with Gibbernium)"), main = "Frequency of changes in blood pressure in different drug conditions", cex.main=1.1, xlab = "Drug condition", ylab = "Frequency", args.legend=list(title="Blood pressure:")) #creates bar plot of the drug conditions against the frequency of those who experienced decrease, no change, or increase in blood pressure
+chisq.test(Experiment_two) #carry out chi-sauqre test to examine if there is a significant relationship between drug condition, and blood pressure changes
+100+32+339+28 #work out the sample size for results write up
+(339/399)*100 #work out percentage of control group who showed no change in blood pressure, for write up
+
+#now check that experiment 1 was normally distributed, because it interfered with the run earlier#
+plot(gibbernium.twoway.anova)#double check that data errors were normally distributed to begin with in experiment 1, by producing QQ plot of residuals and graph of homoscedasticity
